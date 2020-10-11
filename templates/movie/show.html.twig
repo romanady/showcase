@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Movie{% endblock %}
+
+{% block body %}
+    <h1>Movie</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ movie.id }}</td>
+            </tr>
+            <tr>
+                <th>Body</th>
+                <td>{{ movie.body }}</td>
+            </tr>
+            <tr>
+                <th>CardImages</th>
+                <td>{{ movie.cardImages }}</td>
+            </tr>
+            <tr>
+                <th>Cast</th>
+                <td>{{ movie.cast }}</td>
+            </tr>
+            <tr>
+                <th>Cert</th>
+                <td>{{ movie.cert }}</td>
+            </tr>
+            <tr>
+                <th>Class</th>
+                <td>{{ movie.class }}</td>
+            </tr>
+            <tr>
+                <th>Directors</th>
+                <td>{{ movie.directors }}</td>
+            </tr>
+            <tr>
+                <th>Duration</th>
+                <td>{{ movie.duration }}</td>
+            </tr>
+            <tr>
+                <th>Genres</th>
+                <td>{{ movie.genres }}</td>
+            </tr>
+            <tr>
+                <th>Headline</th>
+                <td>{{ movie.headline }}</td>
+            </tr>
+            <tr>
+                <th>KeyArtImages</th>
+                <td>{{ movie.keyArtImages }}</td>
+            </tr>
+            <tr>
+                <th>LastUpdated</th>
+                <td>{{ movie.lastUpdated }}</td>
+            </tr>
+            <tr>
+                <th>Quote</th>
+                <td>{{ movie.quote }}</td>
+            </tr>
+            <tr>
+                <th>Rating</th>
+                <td>{{ movie.rating }}</td>
+            </tr>
+            <tr>
+                <th>ReviewAuthor</th>
+                <td>{{ movie.reviewAuthor }}</td>
+            </tr>
+            <tr>
+                <th>SkyGoId</th>
+                <td>{{ movie.skyGoId }}</td>
+            </tr>
+            <tr>
+                <th>SkyGoUrl</th>
+                <td>{{ movie.skyGoUrl }}</td>
+            </tr>
+            <tr>
+                <th>Sum</th>
+                <td>{{ movie.sum }}</td>
+            </tr>
+            <tr>
+                <th>Synopsis</th>
+                <td>{{ movie.synopsis }}</td>
+            </tr>
+            <tr>
+                <th>Url</th>
+                <td>{{ movie.url }}</td>
+            </tr>
+            <tr>
+                <th>Videos</th>
+                <td>{{ movie.videos }}</td>
+            </tr>
+            <tr>
+                <th>ViewingWindow</th>
+                <td>{{ movie.viewingWindow }}</td>
+            </tr>
+            <tr>
+                <th>Year</th>
+                <td>{{ movie.year }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('movie_index') }}">back to list</a>
+
+{% endblock %}
