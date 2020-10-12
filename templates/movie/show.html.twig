@@ -17,7 +17,7 @@
             </tr>
             <tr>
                 <th>CardImages</th>
-                <td>{{ movie.cardImages }}</td>
+                <td>{{ movie.cardImages|imageRender('cardImages')|raw }}</td>
             </tr>
             <tr>
                 <th>Cast</th>
@@ -49,11 +49,7 @@
             </tr>
             <tr>
                 <th>KeyArtImages</th>
-                {#{% for image in movie.keyArtImages %}#}
-                    {#<img src="{{ path('image_show', {'url': image}) }}" />#}
-                {#{% endfor %}#}
-                <img src="{{ path('image_show', {'id': movie.id, 'type': 'cardImages'}) }}" />
-                <td>{{ movie.keyArtImages }}</td>
+                <td>{{ movie.keyArtImages|imageRender('keyArtImages')|raw }}</td>
             </tr>
             <tr>
                 <th>LastUpdated</th>

@@ -1,0 +1,5 @@
+<div>
+    {% for image in images %}
+        <img width="{{ image.width }}" height="{{ image.height }}" src="data:image/jpeg;base64,{{ image.content }}" />
+    {% endfor %}
+</div>

@@ -25,7 +25,6 @@ class MemcacheManager implements CacheManagerInterface
         } catch (\Exception $exception) {
             return null;
         }
-
     }
 
     /**
@@ -33,18 +32,41 @@ class MemcacheManager implements CacheManagerInterface
      * @param $imageContent
      * @return bool|string
      */
-    public function loadImage($imageUrl, $imageContent)
+    public function loadImage($imageUrl)
     {
         // If we cannot make a Memcache connection, just return the received value
         if (!$this->client) {
-            return $imageContent;
+            return $imageUrl;
         }
 
-        if (!$cachedImage = $this->client->get($imageUrl)) {
+        $key = md5($imageUrl);
+
+        if (!$cachedImage = $this->client->get($key)) {
+            $imageContent = $this->loadImageContentFromUrl($imageUrl);
+            if (!$imageContent) {
+                // If image is not found, ignore the entry
+                return null;
+            }
             $cachedImage = base64_encode($imageContent);
-            $this->client->set($imageUrl, $cachedImage);
+            $this->client->set($key, $cachedImage, '86400');
         }
 
-        return base64_decode($cachedImage);
+        return $cachedImage;
+    }
+
+    /**
+     * @param $imageUrl
+     * @return bool|null|string
+     */
+    private function loadImageContentFromUrl($imageUrl)
+    {
+        // todo move this
+        try {
+            $imageContent = file_get_contents($imageUrl, false);
+            return $imageContent;
+        } catch (\Exception $exception) {
+            // Image not found
+            return null;
+        }
     }
 }

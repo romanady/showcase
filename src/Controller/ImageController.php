@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ImageController extends AbstractController
 {
     /**
+     * This controller could be used to load images via Ajax todo -> remove this Controller
      * @Route("/image/{id}/{type}", name="image_show", methods={"GET"})
      */
     public function imageShow($id, $type, MovieRepository $movieRepository, CacheManagerInterface $imageCacheManager)
@@ -36,8 +37,7 @@ class ImageController extends AbstractController
             $imageContent = file_get_contents($imageUrl, false);
             return $imageContent;
         } catch (\Exception $exception) {
-            die('1');
-            return '';
+            return null;
         }
     }
 }
