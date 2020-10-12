@@ -9,9 +9,7 @@
       * currentPage (int): current pages
       * url (string): route name & query (string): route parameter
         ex: list/page-5?q=myFilter (5 = page and query = myFilter)
-#}
-    {% set nbPages = '5' %}
-    {% set currentPage = '1' %}
+    #}
     {% set url = 'movie_index' %}
     {% if nbPages > 1 %}
 
@@ -20,29 +18,11 @@
 
         <div>
             <ul class="pagination">
-                {% if currentPage != 1 %}
-                    <li>
-                        <a href="{{ path(url, { 'page': 1 }) }}">First</a>
-                    </li>
-                {% endif %}
                 {% for i in 1..nbPages %}
-                    {% if 0 == (currentPage - nearbyPagesLimit) - loop.index %} {# dot before #}
-                        <li class="disabled"><a href="#">...</a></li>
-                    {% elseif 0 == (currentPage + nearbyPagesLimit) - loop.index %} {# dot after #}
-                        <li class="disabled"><a href="#">...</a></li>
-                    {% elseif 0 < (currentPage - nearbyPagesLimit) - loop.index %} {# hide all before #}
-                    {% elseif 0 > (currentPage + nearbyPagesLimit) - loop.index %} {# hide all after #}
-                    {% else %}
-                        <li {% if currentPage == loop.index  %} class="active"{% endif %}>
-                            <a href="{{ path(url, { 'page': loop.index }) }}">{{ loop.index }}</a>
-                        </li>
-                    {% endif %}
-                {% endfor %}
-                {% if currentPage != nbPages %}
-                    <li>
-                        <a href="{{ path(url, { 'page': nbPages }) }}">Last</a>
+                    <li {% if currentPage == loop.index  %} class="active"{% endif %}>
+                        <a href="{{ path(url, { 'page': loop.index }) }}">{{ loop.index }}</a>
                     </li>
-                {% endif %}
+                {% endfor %}
             </ul>
         </div>
     {% endif %}

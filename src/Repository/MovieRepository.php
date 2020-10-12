@@ -36,6 +36,9 @@ class MovieRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return mixed
+     */
     public function hasMovies()
     {
         return $this->createQueryBuilder('m')
@@ -43,5 +46,24 @@ class MovieRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTotalMovies()
+    {
+        return $this->createQueryBuilder('m')
+        ->select('count(m.id)')
+        ->getQuery()
+        ->getSingleScalarResult();
+    }
+
+    /**
+     * @return int
+     */
+    public function getPerPage()
+    {
+        return self::PAGE_SIZE;
     }
 }

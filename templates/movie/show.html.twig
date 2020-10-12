@@ -49,6 +49,10 @@
             </tr>
             <tr>
                 <th>KeyArtImages</th>
+                {#{% for image in movie.keyArtImages %}#}
+                    {#<img src="{{ path('image_show', {'url': image}) }}" />#}
+                {#{% endfor %}#}
+                <img src="{{ path('image_show', {'id': movie.id, 'type': 'cardImages'}) }}" />
                 <td>{{ movie.keyArtImages }}</td>
             </tr>
             <tr>
