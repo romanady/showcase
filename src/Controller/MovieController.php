@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Movie;
+use App\Repository\MovieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use \App\Service\PageLoader\PageLoaderInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,19 +18,21 @@ class MovieController extends AbstractController
     /**
      * @Route("/", name="movie_index", methods={"GET"})
      */
-    public function index(Request $request, PageLoaderInterface $pageLoader): Response
+    public function index(Request $request, PageLoaderInterface $pageLoader, MovieRepository $movieRepository): Response
     {
-        $page = $request->query->get('page', 0);
+        $page = $request->query->get('page', 1);
+        $movies = [];
         try {
             $movies = $pageLoader->loadData($page);
         } catch (\Exception $exception) {
             // todo show an error message
-            var_dump($exception->getMessage());
-            var_dump($exception->getTraceAsString());
         }
-        //'total' => count($movieRepository->findAll())
+        $totalMovies = $movieRepository->getTotalMovies();
         return $this->render('movie/index.html.twig', [
-            'movies' => $movies
+            'movies' => $movies,
+            'nbPages' => $totalMovies / $movieRepository->getPerPage(),
+            'currentPage' => $page,
+            'total' => $totalMovies
         ]);
     }
 
