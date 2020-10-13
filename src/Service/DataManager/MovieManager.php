@@ -2,15 +2,15 @@
 
 namespace App\Service\DataManager;
 
+use App\Entity\Image;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Helper\JsonDecoder;
 use App\Entity\Movie;
-use App\Service\DataManager\DataValidatorTrait;
 
 class MovieManager implements DataManagerInterface
 {
-    const MOVIE_JSON_URL = 'https://mgtechtest.blob.core.windows.net/files/showcase.json';
+    const MOVIE_JSON_URL = 'https://mgtechtest.blob.core.windows.net/files/showcase.json'; //todo move to config $_env
     const CONTENT_TYPE = 'application/json';
 
     /** @var HttpClientInterface  */
@@ -50,14 +50,14 @@ class MovieManager implements DataManagerInterface
             }
             $content = $response->getContent();
             try {
-                // Because $content = $response->toArray(); does not work we will
+                // Because $content = $response->toArray(); does not work we need to create a custom logic
                 $movies = $this->jsonDecoder->safeJsonDecode($content);
-            } catch (\Exception $exception) {
+            } catch (\Throwable $exception) {
                 $movies = [];
             }
 
             return $movies;
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
             return [];
         }
     }
@@ -74,13 +74,17 @@ class MovieManager implements DataManagerInterface
 
         foreach ($data as $datum) {
             $movie = new Movie();
-//            $columns = array_keys($datum);
-//            foreach ($columns as $column) {
-//                var_dump('set' . ucfirst($column) . '()');
-//            }
+            foreach ($datum['cardImages'] as $cardImage) {
+                $image = new Image();
+                $image->setImageUrl($cardImage['url'])
+                    ->setWidth($cardImage['w'])
+                    ->setHeight($cardImage['h'])
+                    ->setType('cardImages');
+                $movie->addImage($image);
+                $this->entityManager->persist($image);
+            }
             $movie->setId($datum['id']);
             $movie->setBody($datum['body']);
-            $movie->setCardImages(json_encode($datum['cardImages']));
             $movie->setCast(json_encode($datum['cast']));
             $movie->setCert($datum['cert']);
             $movie->setClass($datum['class']);
@@ -88,7 +92,17 @@ class MovieManager implements DataManagerInterface
             $movie->setDuration($datum['duration']);
             $movie->setGenres(isset($datum['genres']) ? json_encode($datum['genres']) : '');
             $movie->setHeadline($datum['headline']);
-            $movie->setKeyArtImages(json_encode($datum['keyArtImages']));
+
+            foreach ($datum['keyArtImages'] as $cardImage) {
+                $image = new Image();
+                $image->setImageUrl($cardImage['url'])
+                    ->setWidth($cardImage['w'])
+                    ->setHeight($cardImage['h'])
+                    ->setType('keyArtImages');
+                $movie->addImage($image);
+                $this->entityManager->persist($image);
+            }
+
             $movie->setLastUpdated($datum['lastUpdated']);
             $movie->setQuote(isset($datum['quote']) ? $datum['quote'] : '');
             $movie->setRating(isset($datum['rating']) ? $datum['rating'] : '');

@@ -2,6 +2,7 @@
 
 namespace App\Twig;
 
+use App\Entity\Image;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\Environment;
@@ -28,20 +29,27 @@ class AppExtension extends AbstractExtension
         ];
     }
 
-    public function imageRender($imagesJson, $type)
+    /**
+     * @param Image $image
+     * @param $type
+     * @return mixed
+     */
+    public function imageRender($images, $type)
     {
-        $images = json_decode($imagesJson, true);
         $cachedImages = [];
+        /** @var Image $image */
         foreach ($images as $image) {
-            $imageUrl = $image['url'];
-            $imageContent = $this->imageCacheManager->loadImage($imageUrl);
-            if (!$imageContent) {
+            if ($image->getType() != $type) {
+                continue;
+            }
+            if (!$imageContent = $this->imageCacheManager->loadImage($image->getId(), $image->getImageUrl())) {
+                // Image was not found
                 continue;
             }
             $cachedImages[] = [
                 'content' => $imageContent,
-                'height' => $image['h'],
-                'width' => $image['w'],
+                'height' => $image->getHeight(),
+                'width' => $image->getWidth(),
             ];
         }
         return $this->twig->render(

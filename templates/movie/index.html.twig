@@ -62,8 +62,7 @@
             <tr>
                 <td>{{ movie.id }}</td>
                 <td>{{ movie.body }}</td>
-                <td>{{ movie.cardImages|imageRender('cardImages')|raw }}</td>
-                {#<td>{{ movie.cardImages }}</td>#}
+                <td>{{ movie.image|imageRender('cardImages')|raw }}</td>
                 <td>{{ movie.cast }}</td>
                 <td>{{ movie.cert }}</td>
                 <td>{{ movie.class }}</td>
@@ -71,8 +70,7 @@
                 <td>{{ movie.duration }}</td>
                 <td>{{ movie.genres }}</td>
                 <td>{{ movie.headline }}</td>
-                <td>{{ movie.keyArtImages|imageRender('keyArtImages')|raw }}</td>
-                {#<td>{{ movie.keyArtImages }}</td>#}
+                <td>{{ movie.image|imageRender('keyArtImages')|raw }}</td>
                 <td>{{ movie.lastUpdated }}</td>
                 <td>{{ movie.quote }}</td>
                 <td>{{ movie.rating }}</td>

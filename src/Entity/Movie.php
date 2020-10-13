@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\MovieRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass=MovieRepository::class)
@@ -20,11 +22,6 @@ class Movie
      * @ORM\Column(type="text", length=65535)
      */
     private $body;
-
-    /**
-     * @ORM\Column(type="text", length=65535)
-     */
-    private $cardImages;
 
     /**
      * @ORM\Column(type="text", length=65535)
@@ -60,11 +57,6 @@ class Movie
      * @ORM\Column(type="string", length=255)
      */
     private $headline;
-
-    /**
-     * @ORM\Column(type="text", length=65535)
-     */
-    private $keyArtImages;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -126,6 +118,16 @@ class Movie
      */
     private $year;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Image::class, mappedBy="movie")
+     */
+    private $image;
+
+    public function __construct()
+    {
+        $this->image = new ArrayCollection();
+    }
+
     public function getId()
     {
         return $this->id;
@@ -153,22 +155,6 @@ class Movie
     public function setBody($body)
     {
         $this->body = $body;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCardImages()
-    {
-        return $this->cardImages;
-    }
-
-    /**
-     * @param mixed $cardImages
-     */
-    public function setCardImages($cardImages)
-    {
-        $this->cardImages = $cardImages;
     }
 
     /**
@@ -281,22 +267,6 @@ class Movie
     public function setHeadline($headline)
     {
         $this->headline = $headline;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getKeyArtImages()
-    {
-        return $this->keyArtImages;
-    }
-
-    /**
-     * @param mixed $keyArtImages
-     */
-    public function setKeyArtImages($keyArtImages)
-    {
-        $this->keyArtImages = $keyArtImages;
     }
 
     /**
@@ -489,5 +459,36 @@ class Movie
     public function setYear($year)
     {
         $this->year = $year;
+    }
+
+    /**
+     * @return Collection|Image[]
+     */
+    public function getImage(): Collection
+    {
+        return $this->image;
+    }
+
+    public function addImage(Image $image): self
+    {
+        if (!$this->image->contains($image)) {
+            $this->image[] = $image;
+            $image->setMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): self
+    {
+        if ($this->image->contains($image)) {
+            $this->image->removeElement($image);
+            // set the owning side to null (unless already changed)
+            if ($image->getMovie() === $this) {
+                $image->setMovie(null);
+            }
+        }
+
+        return $this;
     }
 }
