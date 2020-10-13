@@ -2,6 +2,7 @@
 
 namespace App\Service\DataManager;
 
+use App\Helper\ImageLoader;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 
 class MemcacheManager implements CacheManagerInterface
@@ -37,9 +38,7 @@ class MemcacheManager implements CacheManagerInterface
         $cachedImage = $this->client->get($imageId);
 
         if ($this->client->getResultMessage() != 'SUCCESS') { // todo use constant
-            try {
-                $imageContent = file_get_contents($imageUrl, false);
-            } catch (\Throwable $exception) {
+            if (!$imageContent = ImageLoader::getImage($imageUrl)) {
                 // If image is not found, ignore the entry
                 return null;
             }
