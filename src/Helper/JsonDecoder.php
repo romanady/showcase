@@ -9,7 +9,7 @@ class JsonDecoder
      * @return mixed
      * @throws \Exception
      */
-    public function safeJsonDecode($value)
+    public static function safeJsonDecode($value)
     {
         $decoded = json_decode($value, true);
         switch (json_last_error()) {
