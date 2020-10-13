@@ -50,7 +50,9 @@ class MovieController extends AbstractController
             ]);
 
         } catch (\Throwable $exception) {
-            // todo show an error message
+            return $this->render('movie/index.html.twig', [
+                'pagination' => null,
+            ]);
         }
     }
 

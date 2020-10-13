@@ -7,6 +7,7 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\Environment;
 use App\Service\DataManager\CacheManagerInterface;
+use Doctrine\ORM\PersistentCollection;
 
 class AppExtension extends AbstractExtension
 {
@@ -30,11 +31,11 @@ class AppExtension extends AbstractExtension
     }
 
     /**
-     * @param Image $image
+     * @param $images
      * @param $type
      * @return mixed
      */
-    public function imageRender($images, $type)
+    public function imageRender(PersistentCollection $images, string $type)
     {
         $cachedImages = [];
         /** @var Image $image */
