@@ -22,18 +22,13 @@ class MovieRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int $page
      * @return mixed
      */
-    public function loadMovies($page = 1)
+    public function loadMoviesQuery()
     {
-        //todo FirstResult =1 skips first 10 entries
         return $this->createQueryBuilder('m')
             ->orderBy('m.id', 'ASC')
-            ->setMaxResults(self::PAGE_SIZE)
-            ->setFirstResult($page * self::PAGE_SIZE)
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
     }
 
     /**
@@ -46,17 +41,6 @@ class MovieRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getResult();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTotalMovies()
-    {
-        return $this->createQueryBuilder('m')
-        ->select('count(m.id)')
-        ->getQuery()
-        ->getSingleScalarResult();
     }
 
     /**

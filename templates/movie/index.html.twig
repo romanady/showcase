@@ -5,28 +5,12 @@
 {% block body %}
     {#
     Parameters:
-      * nbPages (int): number of pages
-      * currentPage (int): current pages
       * url (string): route name & query (string): route parameter
-        ex: list/page-5?q=myFilter (5 = page and query = myFilter)
     #}
     {% set url = 'movie_index' %}
-    {% if nbPages > 1 %}
 
-        {# Number of page around current page+1 #}
-        {% set nearbyPagesLimit = 4 %}
-
-        <div>
-            <ul class="pagination">
-                {% for i in 1..nbPages %}
-                    <li {% if currentPage == loop.index  %} class="active"{% endif %}>
-                        <a href="{{ path(url, { 'page': loop.index }) }}">{{ loop.index }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
-    <h1>Movie index</h1>
+    <h1>{{ pagination.getTotalItemCount }} Movies</h1>
+    {{ knp_pagination_render(pagination) }}
 
     <table class="table table-striped">
         <thead>
@@ -58,7 +42,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for movie in movies %}
+        {% for movie in pagination %}
             <tr>
                 <td>{{ movie.id }}</td>
                 <td>{{ movie.body }}</td>

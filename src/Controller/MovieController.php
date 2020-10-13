@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use \App\Service\PageLoader\PageLoaderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -15,29 +16,41 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class MovieController extends AbstractController
 {
+
     /**
      * @Route("/", name="movie_index", methods={"GET"})
+     * @param Request $request
+     * @param MovieRepository $movieRepository
+     * @param PaginatorInterface $paginator
+     * @return Response
      */
-    public function index(Request $request, PageLoaderInterface $pageLoader, MovieRepository $movieRepository): Response
+    public function index(
+        Request $request,
+        MovieRepository $movieRepository,
+        PaginatorInterface $paginator
+    ): Response
     {
-        $page = $request->query->get('page', 1);
-        $movies = [];
         try {
-            $movies = $pageLoader->loadData($page);
-        } catch (\Exception $exception) {
+            $page = $request->query->get('page', 1);
+            $moviesQuery = $movieRepository->loadMoviesQuery();
+            $pagination = $paginator->paginate(
+                $moviesQuery,
+                $page,
+                $movieRepository->getPerPage()
+            );
+            return $this->render('movie/index.html.twig', [
+                'pagination' => $pagination,
+            ]);
+
+        } catch (\Throwable $exception) {
             // todo show an error message
         }
-        $totalMovies = $movieRepository->getTotalMovies();
-        return $this->render('movie/index.html.twig', [
-            'movies' => $movies,
-            'nbPages' => $totalMovies / $movieRepository->getPerPage(),
-            'currentPage' => $page,
-            'total' => $totalMovies
-        ]);
     }
 
     /**
      * @Route("/{id}", name="movie_show", methods={"GET"})
+     * @param Movie $movie
+     * @return Response
      */
     public function show(Movie $movie): Response
     {
