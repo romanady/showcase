@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Movie;
 use App\Repository\MovieRepository;
+use App\Service\DataManager\MovieManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use \App\Service\PageLoader\PageLoaderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Knp\Component\Pager\PaginatorInterface;
@@ -27,11 +27,18 @@ class MovieController extends AbstractController
     public function index(
         Request $request,
         MovieRepository $movieRepository,
+        MovieManager $movieManager,
         PaginatorInterface $paginator
     ): Response
     {
         try {
             $page = $request->query->get('page', 1);
+            // Check if we have data stored
+            if (!count($movieRepository->hasMovies())) {
+                // Otherwise store it
+                $movieManager->storeData();
+            }
+
             $moviesQuery = $movieRepository->loadMoviesQuery();
             $pagination = $paginator->paginate(
                 $moviesQuery,

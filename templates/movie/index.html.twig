@@ -44,7 +44,8 @@
         <tbody>
         {% for movie in pagination %}
             <tr>
-                <td>{{ movie.id }}</td>
+                <td><a href="{{ path('movie_show', {'id': movie.id}) }}">{{ movie.id }}</a></td>
+
                 <td>{{ movie.body }}</td>
                 <td>{{ movie.image|imageRender('cardImages')|raw }}</td>
                 <td>{{ movie.cast }}</td>

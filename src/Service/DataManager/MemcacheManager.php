@@ -4,10 +4,8 @@ namespace App\Service\DataManager;
 
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 
-// todo -> static ImageHelper
 class MemcacheManager implements CacheManagerInterface
 {
-
     /** @var \Memcached */
     private $client;
 
@@ -29,14 +27,16 @@ class MemcacheManager implements CacheManagerInterface
      * @param string $imageUrl
      * @return bool|string
      */
-    public function loadImage(string $imageId, string $imageUrl)
+    public function loadImage(string $imageId, string $imageUrl): ?string
     {
         // If we cannot make a Memcache connection, just return the received value
         if (!$this->client) {
             return base64_encode($imageUrl);
         }
 
-        if (!$cachedImage = $this->client->get($imageId)) {
+        $cachedImage = $this->client->get($imageId);
+
+        if ($this->client->getResultMessage() != 'SUCCESS') { // todo use constant
             try {
                 $imageContent = file_get_contents($imageUrl, false);
             } catch (\Throwable $exception) {

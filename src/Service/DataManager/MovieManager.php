@@ -3,12 +3,13 @@
 namespace App\Service\DataManager;
 
 use App\Entity\Image;
+use App\Repository\MovieRepository;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Helper\JsonDecoder;
 use App\Entity\Movie;
 
-class MovieManager implements DataManagerInterface
+class MovieManager
 {
     const MOVIE_JSON_URL = 'https://mgtechtest.blob.core.windows.net/files/showcase.json'; //todo move to config $_env
     const CONTENT_TYPE = 'application/json';
@@ -19,24 +20,24 @@ class MovieManager implements DataManagerInterface
     /** @var EntityManagerInterface  */
     private $entityManager;
 
-    /** @var JsonDecoder  */
-    private $jsonDecoder;
+    /** @var MovieRepository  */
+    private $movieRepository;
 
     public function __construct(
         HttpClientInterface $client,
         EntityManagerInterface $entityManager,
-        JsonDecoder $jsonDecoder
+        MovieRepository $movieRepository
     )
     {
         $this->client = $client;
         $this->entityManager = $entityManager;
-        $this->jsonDecoder = $jsonDecoder;
+        $this->movieRepository = $movieRepository;
     }
 
     /**
      * @return array|mixed|null
      */
-    public function loadFromUrl()
+    public function loadFromUrl(): array
     {
         try {
             $response = $this->client->request(
@@ -51,7 +52,7 @@ class MovieManager implements DataManagerInterface
             $content = $response->getContent();
             try {
                 // Because $content = $response->toArray(); does not work we need to create a custom logic
-                $movies = $this->jsonDecoder->safeJsonDecode($content);
+                $movies = JsonDecoder::safeJsonDecode($content);
             } catch (\Throwable $exception) {
                 $movies = [];
             }
