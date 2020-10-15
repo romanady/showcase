@@ -2,16 +2,23 @@
 
 namespace App\Service\DataManager;
 
+use App\Entity\Image;
 use App\Helper\ImageLoader;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
+use Doctrine\ORM\EntityManagerInterface;
 
 class MemcacheManager implements CacheManagerInterface
 {
     /** @var \Memcached */
     private $client;
 
-    public function __construct()
+    /** @var EntityManagerInterface */
+    private $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
     {
+        $this->entityManager = $entityManager;
+
         try {
             $this->client = MemcachedAdapter::createConnection(
                 $_ENV['MEMCAHE_DATA']
@@ -40,7 +47,11 @@ class MemcacheManager implements CacheManagerInterface
 
         if ($this->client->getResultMessage() != 'SUCCESS') { // todo use constant
             if (!$imageContent = ImageLoader::getImage($imageUrl)) {
-                // If image is not found, ignore the entry
+                $this->deleteImage($imageId);
+                /**
+                 * If image is not found delete it so it does not affect page load in the future
+                 * A cronjob can be set to check for new images
+                 */
                 return null;
             }
             $cachedImage = base64_encode($imageContent);
@@ -48,5 +59,20 @@ class MemcacheManager implements CacheManagerInterface
         }
 
         return $cachedImage;
+    }
+
+    /**
+     * @param $imageId
+     */
+    protected function deleteImage($id)
+    {
+        $image = $this->entityManager->getRepository(Image::class)->find($id);
+        if (!$image) {
+            throw $this->createNotFoundException(
+                'No image found for id ' . $id
+            );
+        }
+        $this->entityManager->remove($image);
+        $this->entityManager->flush();
     }
 }

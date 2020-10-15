@@ -34,6 +34,7 @@ class MovieManager
     }
 
     /**
+     * Load Json data from data url
      * @return array|mixed|null
      */
     public function loadFromUrl(): array
@@ -63,6 +64,7 @@ class MovieManager
     }
 
     /**
+     * Store loaded data
      * @throws \Exception
      */
     public function storeData()
