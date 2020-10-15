@@ -5,6 +5,7 @@
 - see composer.json for PHP extensions and package requirements
 ## Features
 - Download data on first access from https://mgtechtest.blob.core.windows.net/files/showcase.json
+- Store data on two related entities: Movie and Image
 - Cache images as base64 using Memcache
 - Display paginated list of items with individual pages for each item
 This project is based on the symfony 5 skeleton. 
@@ -37,6 +38,14 @@ Next you will have to create the database by running the following commands:
     
     #Run migrations
     bin/console doctrine:migrations:migrate
+    
+#### Environment setup:
+
+Add the following lines inside .env 
+
+    MEMCAHE_DATA=memcached://localhost:11211
+    DATA_URL=https://mgtechtest.blob.core.windows.net/files/showcase.json
+
     
 
     

@@ -11,7 +11,6 @@ use App\Entity\Movie;
 
 class MovieManager
 {
-    const MOVIE_JSON_URL = 'https://mgtechtest.blob.core.windows.net/files/showcase.json'; //todo move to config $_env
     const CONTENT_TYPE = 'application/json';
 
     /** @var HttpClientInterface  */
@@ -42,7 +41,7 @@ class MovieManager
         try {
             $response = $this->client->request(
                 'GET',
-                self::MOVIE_JSON_URL
+                $_ENV['DATA_URL']
             );
 
             $contentType = $response->getHeaders()['content-type'][0];

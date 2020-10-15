@@ -14,11 +14,12 @@ class MemcacheManager implements CacheManagerInterface
     {
         try {
             $this->client = MemcachedAdapter::createConnection(
-                'memcached://localhost:11211' // todo use .env parameters
+                $_ENV['MEMCAHE_DATA']
             );
 
             return $this->client;
         } catch (\Throwable $exception) {
+            // Could not make a memcache connection
             return null;
         }
     }
